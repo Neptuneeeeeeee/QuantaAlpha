@@ -121,7 +121,7 @@ class BacktestRunner:
             auto_extract_cache=auto_extract,
             config=self.config,
         )
-        result_df = calculator.calculate_factors_batch(factors, use_cache=True, skip_compute=skip_uncached)
+        result_df = calculator.calculate_factors_batch(factors, use_cache=True, skip_compute=skip_compute)
         if result_df is None:
             logger.error("Factor computation returned None")
             return None
