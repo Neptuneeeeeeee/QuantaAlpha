@@ -16,14 +16,14 @@ evaluator_code_feedback_v1_system: |-
   - **SCALE(A, target_sum)**: Scale the absolute values in the cross-section to sum to target_sum.
 
   ### **Time-Series Functions**
-  - **DELTA(A, n)**: Change in value of A over n periods.
-  - **DELAY(A, n)**: Value of A delayed by n periods.
+  - **DELTA(A, n)**: Change from n periods ago; n must be a non-negative integer.
+  - **DELAY(A, n)**: Value of A delayed by n periods; n must be a non-negative integer.
   - **TS_MEAN(A, n)**: Mean value of sequence A over the past n days.
   - **TS_SUM(A, n)**: Sum of sequence A over the past n days.
   - **TS_RANK(A, n)**: Time-series rank of the last value of A in the past n days.
   - **TS_ZSCORE(A, n)**: Z-score for each sequence in A over the past n days.
   - **TS_MEDIAN(A, n)**: Median value of sequence A over the past n days.
-  - **TS_PCTCHANGE(A, p)**: Percentage change in the value of sequence A over p periods.
+  - **TS_PCTCHANGE(A, p)**: Percentage change from p periods ago; p must be a non-negative integer.
   - **TS_MIN(A, n)**: Minimum value of A in the past n days.
   - **TS_MAX(A, n)**: Maximum value of A in the past n days.
   - **TS_ARGMAX(A, n)**: The index (relative to the current time) of the maximum value of A over the past n days.
@@ -145,14 +145,14 @@ evolving_strategy_factor_implementation_v1_system: |-
   - **SCALE(A, target_sum)**: Scale the absolute values in the cross-section to sum to target_sum.
 
   ### **Time-Series Functions**
-  - **DELTA(A, n)**: Change in value of A over n periods.
-  - **DELAY(A, n)**: Value of A delayed by n periods.
+  - **DELTA(A, n)**: Change from n periods ago; n must be a non-negative integer.
+  - **DELAY(A, n)**: Value of A delayed by n periods; n must be a non-negative integer.
   - **TS_MEAN(A, n)**: Mean value of sequence A over the past n days.
   - **TS_SUM(A, n)**: Sum of sequence A over the past n days.
   - **TS_RANK(A, n)**: Time-series rank of the last value of A in the past n days.
   - **TS_ZSCORE(A, n)**: Z-score for each sequence in A over the past n days.
   - **TS_MEDIAN(A, n)**: Median value of sequence A over the past n days.
-  - **TS_PCTCHANGE(A, p)**: Percentage change in the value of sequence A over p periods.
+  - **TS_PCTCHANGE(A, p)**: Percentage change from p periods ago; p must be a non-negative integer.
   - **TS_MIN(A, n)**: Minimum value of A in the past n days.
   - **TS_MAX(A, n)**: Maximum value of A in the past n days.
   - **TS_ARGMAX(A, n)**: The index (relative to the current time) of the maximum value of A over the past n days.
@@ -395,13 +395,13 @@ function_lib_description: |-
   - **PERCENTILE(A, q, p)**: Quantile of sequence A, where q is the quantile value between 0 and 1. If p is provided, it calculates the rolling quantile over the past p periods.
 
   ### **Time-Series Functions**
-  - **DELTA(A, n)**: Change in value of A over n periods.
-  - **DELAY(A, n)**: Value of A delayed by n periods.
+  - **DELTA(A, n)**: Change from n periods ago; n must be a non-negative integer.
+  - **DELAY(A, n)**: Value of A delayed by n periods; n must be a non-negative integer.
   - **TS_MEAN(A, n)**: Mean value of sequence A over the past n days.
   - **TS_SUM(A, n)**: Sum of sequence A over the past n days.
   - **TS_MEDIAN(A, n)**: Median value of sequence A over the past n days.
   - **TS_MAD(A, n)**: Rolling Median Absolute Deviation of sequence A over the past n days.
-  - **TS_PCTCHANGE(A, p)**: Percentage change in the value of sequence A over p periods.
+  - **TS_PCTCHANGE(A, p)**: Percentage change from p periods ago; p must be a non-negative integer.
   - **TS_MIN(A, n)**: Minimum value of A in the past n days.
   - **TS_MAX(A, n)**: Maximum value of A in the past n days.
   - **TS_ARGMAX(A, n)**: The index (relative to the current time) of the maximum value of A over the past n days.

@@ -4,6 +4,21 @@ import operator
 from joblib import Parallel, delayed
 
 
+def _validate_nonnegative_lag(operator_name: str, period) -> int:
+    """Validate lag-like periods that would access future rows when negative."""
+    if isinstance(period, (bool, np.bool_)) or not isinstance(period, (int, np.integer)):
+        raise ValueError(
+            f"{operator_name} period must be an integer >= 0, got {period!r}"
+        )
+    period = int(period)
+    if period < 0:
+        raise ValueError(
+            f"{operator_name} period must be >= 0; negative periods access future "
+            "observations and introduce look-ahead bias"
+        )
+    return period
+
+
 def datatype_adapter(func):
     def wrapper(*args):
         if len(args) == 1 and isinstance(args[0], np.ndarray):
@@ -28,6 +43,8 @@ def datatype_adapter(func):
 
 @datatype_adapter
 def DELTA(df:pd.DataFrame, p:int=1):
+    """Difference from p periods ago; p must be a non-negative integer."""
+    p = _validate_nonnegative_lag("DELTA", p)
     return df.groupby('instrument').transform(lambda x: x.diff(periods=p))
 
 @datatype_adapter
@@ -185,8 +202,8 @@ def ABS(df:pd.DataFrame):
 
 @datatype_adapter
 def DELAY(df:pd.DataFrame, p:int=1):
-    """Delay data by p periods."""
-    assert p >= 0, ValueError("DELAY period must be >= 0 (look-ahead bias)")
+    """Delay data by p periods; p must be a non-negative integer."""
+    p = _validate_nonnegative_lag("DELAY", p)
     return df.groupby('instrument').transform(lambda x: x.shift(p))
 
 
@@ -620,7 +637,8 @@ def TS_QUANTILE(df: pd.DataFrame, p: int = 5, q: float = 0.5):
 
 @datatype_adapter
 def TS_PCTCHANGE(df: pd.DataFrame, p: int = 1):
-    """Percentage change over p periods (default 1)."""
+    """Percentage change from p periods ago; p must be non-negative."""
+    p = _validate_nonnegative_lag("TS_PCTCHANGE", p)
     return df.groupby('instrument').transform(lambda x: x.pct_change(periods=p, fill_method=None).fillna(0))
 
 
