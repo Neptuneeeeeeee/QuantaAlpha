@@ -153,7 +153,10 @@ def _run_evolution_task(
         direction = None
 
     trajectory_id = StrategyTrajectory.generate_id(direction_id, round_idx, phase)
-    parent_ids = [p.trajectory_id for p in parent_trajectories]
+    # Parallel tasks carry IDs instead of the full parent trajectory objects.
+    parent_ids = task.get("parent_trajectory_ids")
+    if parent_ids is None:
+        parent_ids = [p.trajectory_id for p in parent_trajectories]
 
     if log_root:
         branch_name = f"{phase.value}_{round_idx:02d}_{direction_id:02d}"
@@ -197,10 +200,11 @@ def _parallel_task_worker(
     log_root: str,
     result_queue: Queue,
     task_idx: int,
+    quality_gate_cfg: dict[str, Any] | None = None,
 ):
     """
     Worker for parallel evolution tasks. Runs one evolution task in a separate process and puts result in queue.
-    Args: task, directions, step_n, use_local, user_direction, log_root, result_queue, task_idx.
+    Args: task, directions, step_n, use_local, user_direction, log_root, result_queue, task_idx, quality_gate_cfg.
     """
     try:
         from quantaalpha.core.conf import RD_AGENT_SETTINGS
@@ -217,6 +221,7 @@ def _parallel_task_worker(
             user_direction=user_direction,
             log_root=log_root,
             stop_event=None,
+            quality_gate_cfg=quality_gate_cfg,
         )
         result_queue.put({
             "success": True,
@@ -261,6 +266,7 @@ def _run_tasks_parallel(
     use_local: bool,
     user_direction: str | None,
     log_root: str,
+    quality_gate_cfg: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     """
     Run multiple evolution tasks in parallel.
@@ -289,6 +295,7 @@ def _run_tasks_parallel(
                 result_queue,
                 idx,
             ),
+            kwargs={"quality_gate_cfg": quality_gate_cfg},
         )
         p.start()
         processes.append(p)
@@ -438,6 +445,7 @@ def run_evolution_loop(
                 use_local=use_local,
                 user_direction=initial_direction,
                 log_root=log_root,
+                quality_gate_cfg=quality_gate_cfg,
             )
             
             completed_tasks = []
@@ -620,6 +628,7 @@ def main(path=None, step_n=100, direction=None, stop_event=None, config_path=Non
                     p = Process(
                         target=_run_branch,
                         args=(dir_text, step_n, use_local, idx, log_root if use_branch_logs else "", log_prefix),
+                        kwargs={"quality_gate_cfg": quality_gate_cfg},
                     )
                     p.start()
                     procs.append(p)
