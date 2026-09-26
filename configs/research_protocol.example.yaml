@@ -1,0 +1,35 @@
+# Opt-in ResearchProtocol example.
+#
+# This file documents research-role semantics only. It does NOT enforce data
+# isolation, certify factor causality, or prove that final-evaluation data has
+# never been observed. Use `quantaalpha protocol inspect` to compare it with the
+# effective mining and independent-backtest configurations.
+
+version: 1
+name: current-two-stage
+universe: csi300
+
+discovery:
+  # Preliminary mining stage.
+  fit: ["2016-01-01", "2019-12-31"]
+  tune: ["2020-01-01", "2020-12-31"]
+  # Qlib's mining-stage "test" segment is adaptive selection, not final holdout.
+  selection: ["2021-01-01", "2021-12-31"]
+
+final:
+  # Independent backtest stage. This intentionally refits through 2020.
+  fit: ["2016-01-01", "2020-12-31"]
+  tune: ["2021-01-01", "2021-12-31"]
+  evaluation: ["2022-01-01", "2025-12-26"]
+
+label:
+  expression: "Ref($close, -2) / Ref($close, -1) - 1"
+  entry_offset_sessions: 1
+  endpoint_offset_sessions: 2
+  return_duration_sessions: 1
+
+provenance:
+  # Populate these only with real, versioned identifiers. Null means unknown,
+  # not "verified absent".
+  dataset_snapshot_id: null
+  calendar_id: null
