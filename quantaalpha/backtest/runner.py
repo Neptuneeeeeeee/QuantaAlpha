@@ -121,7 +121,7 @@ class BacktestRunner:
             auto_extract_cache=auto_extract,
             config=self.config,
         )
-        result_df = calculator.calculate_factors_batch(factors, use_cache=True, skip_compute=skip_compute)
+        result_df = calculator.calculate_factors_batch(factors, use_cache=True, skip_compute=skip_uncached)
         if result_df is None:
             logger.error("Factor computation returned None")
             return None
@@ -389,7 +389,7 @@ class BacktestRunner:
                         dates = result.index.get_level_values('datetime')
                     except KeyError:
                         dates = result.index.get_level_values(0)
-                    if isinstance(selector, tuple) and len(selector) == 2:
+                    if isinstance(selector, (tuple, list)) and len(selector) == 2:
                         start, end = selector
                         mask = (dates >= pd.Timestamp(start)) & (dates <= pd.Timestamp(end))
                         result = result.loc[mask]
